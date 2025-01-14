@@ -1,3 +1,5 @@
+'use client'
+
 export function Search() {
   return (
     <form onSubmit={(e) => e.preventDefault()} className="flex w-full">
