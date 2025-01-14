@@ -1,50 +1,31 @@
-import { NextResponse } from 'next/server'
-import { MongoClient } from 'mongodb'
+import { NextApiRequest, NextApiResponse } from 'next';
+import dbConnect from '@/lib/mongodb';
+import Comment from '@/models/Comment'; // Assuming you have a Comment model
 
-const uri = process.env.MONGODB_URI as string
-if (!uri) {
-  throw new Error('Please add your MongoDB URI to .env.local')
-}
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  await dbConnect();
 
-const dbName = process.env.MONGODB_DB
-if (!dbName) {
-  throw new Error('Please add your MongoDB database name to .env.local')
-}
-
-let client: MongoClient | null = null
-
-async function getMongoClient() {
-  if (client) return client
-  client = new MongoClient(uri, {
-    maxPoolSize: 10,
-    minPoolSize: 5
-  })
-  await client.connect()
-  return client
-}
-
-export async function GET() {
-  try {
-    const client = await getMongoClient()
-    const db = client.db(dbName)
-    const comments = await db.collection('comments').find({}).toArray()
-    return NextResponse.json(comments)
-  } catch (error) {
-    console.error('GET error:', error)
-    return NextResponse.json({ error: 'Failed to fetch comments' }, { status: 500 })
-  }
-}
-
-export async function POST(request: Request) {
-  try {
-    const body = await request.json()
-    const client = await getMongoClient()
-    const db = client.db(dbName)
-    const result = await db.collection('comments').insertOne(body)
-    return NextResponse.json(result)
-  } catch (error) {
-    console.error('POST error:', error)
-    return NextResponse.json({ error: 'Failed to add comment' }, { status: 500 })
+  switch (req.method) {
+    case 'GET':
+      try {
+        const comments = await Comment.find({});
+        res.status(200).json(comments);
+      } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch comments' });
+      }
+      break;
+    case 'POST':
+      try {
+        const comment = new Comment(req.body);
+        await comment.save();
+        res.status(201).json(comment);
+      } catch (error) {
+        res.status(400).json({ error: 'Failed to create comment' });
+      }
+      break;
+    default:
+      res.setHeader('Allow', ['GET', 'POST']);
+      res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
 

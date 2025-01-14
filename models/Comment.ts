@@ -1,12 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
-const CommentSchema = new mongoose.Schema({
-  comment_id: { type: Number, required: true, unique: true },
-  video_id: { type: String, required: true },
-  user_id: { type: Number, required: true },
-  comment_text: { type: String, required: true },
-  timestamp: { type: Date, default: Date.now },
+interface IComment extends Document {
+  text: string;
+  author: string;
+  // Add other fields as necessary
+}
+
+const CommentSchema: Schema = new Schema({
+  text: { type: String, required: true },
+  author: { type: String, required: true },
+  // Add other fields as necessary
 });
 
-export default mongoose.models.Comment || mongoose.model('Comment', CommentSchema);
+export default mongoose.models.Comment || mongoose.model<IComment>('Comment', CommentSchema);
 
