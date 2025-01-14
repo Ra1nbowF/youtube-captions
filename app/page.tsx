@@ -1,3 +1,5 @@
+/// <reference types="react" />
+
 import { getVideos } from "@/lib/api"
 import { VideoCard } from "@/components/VideoCard"
 import { Header } from "@/components/Header"
