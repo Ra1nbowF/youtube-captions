@@ -7,8 +7,8 @@ export function Header() {
       <div className="flex w-full max-w-[1800px] mx-auto items-center justify-between">
         <div className="flex items-center">
           <Image 
-            src="/youtube-logo.svg"
-            alt="YouTube" 
+            src="/logo.svg"
+            alt="Logo" 
             width={90} 
             height={20}
             className="cursor-pointer"
