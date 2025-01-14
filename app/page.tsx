@@ -1,4 +1,4 @@
-/// <reference types="react" />
+'use client';
 
 import { useState, useEffect } from 'react';
 import VideoSkeleton from '@/components/VideoSkeleton';
