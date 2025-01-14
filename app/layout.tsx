@@ -1,23 +1,24 @@
-import type { Metadata } from 'next'
-import './globals.css'
-import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { Header } from "@/components/Header"
+import type { Metadata } from "next"
+import "./globals.css"
 
 export const metadata: Metadata = {
-  title: 'YouTube Clone',
-  description: 'A YouTube clone built with Next.js',
+  title: "Video Platform",
+  description: "A video platform built with Next.js",
 }
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
     <html lang="en">
       <body>
-        <ErrorBoundary>
+        <Header />
+        <main className="pt-14">
           {children}
-        </ErrorBoundary>
+        </main>
       </body>
     </html>
   )
