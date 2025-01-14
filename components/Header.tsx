@@ -1,33 +1,26 @@
 import Image from "next/image"
-import Link from "next/link"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Search } from 'lucide-react'
+import { Search } from "@/components/Search"
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
-        <Link href="/" className="flex items-center space-x-2">
-          <Image src="/youtube-logo.svg" alt="YouTube" width={90} height={20} />
-        </Link>
-        <div className="flex flex-1 items-center space-x-2 sm:justify-center">
-          <form className="w-full max-w-[600px] relative">
-            <Input
-              type="search"
-              placeholder="Search"
-              className="w-full pl-4 pr-10"
-            />
-            <Button
-              type="submit"
-              size="icon"
-              variant="ghost"
-              className="absolute right-0 top-0 h-full"
-            >
-              <Search className="h-4 w-4" />
-              <span className="sr-only">Search</span>
-            </Button>
-          </form>
+    <header className="fixed top-0 left-0 w-full bg-white z-50 flex items-center px-4 h-14">
+      <div className="flex w-full max-w-[1800px] mx-auto items-center justify-between">
+        <div className="flex items-center">
+          <Image 
+            src="/youtube-logo.svg"
+            alt="YouTube" 
+            width={90} 
+            height={20}
+            className="cursor-pointer"
+          />
+        </div>
+
+        <div className="flex-grow max-w-[728px] mx-4">
+          <Search />
+        </div>
+
+        <div className="w-[225px] flex justify-end">
+          {/* Add icons here later if needed */}
         </div>
       </div>
     </header>

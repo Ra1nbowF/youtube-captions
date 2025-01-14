@@ -1,47 +1,50 @@
 import { NextResponse } from 'next/server'
 import { MongoClient } from 'mongodb'
 
-const uri = process.env.MONGODB_URI
+const uri = process.env.MONGODB_URI as string
 if (!uri) {
   throw new Error('Please add your MongoDB URI to .env.local')
 }
 
-const client = new MongoClient(uri)
+const dbName = process.env.MONGODB_DB
+if (!dbName) {
+  throw new Error('Please add your MongoDB database name to .env.local')
+}
 
-async function connectToDatabase() {
-  try {
-    await client.connect()
-    return client.db(process.env.MONGODB_DB)
-  } catch (error) {
-    console.error('Failed to connect to MongoDB:', error)
-    throw error
-  }
+let client: MongoClient | null = null
+
+async function getMongoClient() {
+  if (client) return client
+  client = new MongoClient(uri, {
+    maxPoolSize: 10,
+    minPoolSize: 5
+  })
+  await client.connect()
+  return client
 }
 
 export async function GET() {
   try {
-    const db = await connectToDatabase()
+    const client = await getMongoClient()
+    const db = client.db(dbName)
     const comments = await db.collection('comments').find({}).toArray()
     return NextResponse.json(comments)
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to fetch comments' },
-      { status: 500 }
-    )
+    console.error('GET error:', error)
+    return NextResponse.json({ error: 'Failed to fetch comments' }, { status: 500 })
   }
 }
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const db = await connectToDatabase()
+    const client = await getMongoClient()
+    const db = client.db(dbName)
     const result = await db.collection('comments').insertOne(body)
     return NextResponse.json(result)
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to add comment' },
-      { status: 500 }
-    )
+    console.error('POST error:', error)
+    return NextResponse.json({ error: 'Failed to add comment' }, { status: 500 })
   }
 }
 
