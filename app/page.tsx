@@ -3,6 +3,13 @@
 import { useState, useEffect } from 'react';
 import VideoSkeleton from '@/components/VideoSkeleton';
 
+const fakeVideos = [
+  { id: 1, title: 'Amazing Nature', thumbnail: '/placeholder.svg' },
+  { id: 2, title: 'Tech Innovations', thumbnail: '/placeholder.svg' },
+  { id: 3, title: 'Cooking Tips', thumbnail: '/placeholder.svg' },
+  { id: 4, title: 'Travel Vlogs', thumbnail: '/placeholder.svg' },
+];
+
 export default function VideoPage() {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,9 +50,12 @@ export default function VideoPage() {
   if (notFound) {
     return (
       <div className="grid grid-cols-1 gap-4 px-4 mt-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {[...Array(12)].map((_, i) => (
-          <div key={i} className="bg-gray-200 rounded-lg aspect-video">
-            <img src="/placeholder.svg" alt="Placeholder" className="w-full h-full object-cover" />
+        {fakeVideos.map((video) => (
+          <div key={video.id} className="bg-gray-200 rounded-lg aspect-video">
+            <a href={`/videos/${video.id}`} className="block">
+              <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" />
+              <div className="mt-2 text-center">{video.title}</div>
+            </a>
           </div>
         ))}
       </div>
