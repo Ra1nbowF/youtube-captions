@@ -4,6 +4,8 @@ import { getVideos } from "@/lib/api"
 import { VideoCard } from "@/components/VideoCard"
 import { Header } from "@/components/Header"
 
+export const dynamic = 'force-dynamic'
+
 export default async function Home() {
   const videos = await getVideos();
 
