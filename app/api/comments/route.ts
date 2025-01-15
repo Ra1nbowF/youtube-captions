@@ -1,31 +1,45 @@
-import { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
-import Comment from '@/models/Comment'; // Assuming you have a Comment model
+import mongoose from 'mongoose';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  await dbConnect();
+export async function GET() {
+  try {
+    await dbConnect();
+    console.log('Connected to MongoDB');
+    
+    const db = mongoose.connection.db;
+    if (!db) {
+      throw new Error('Database not found');
+    }
+    
+    const comments = await db.collection('comments').find({}).toArray();
+    console.log('Retrieved comments:', comments.length);
+    
+    return NextResponse.json(comments);
+  } catch (error) {
+    console.error('GET error:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch comments' }, 
+      { status: 500 }
+    );
+  }
+}
 
-  switch (req.method) {
-    case 'GET':
-      try {
-        const comments = await Comment.find({});
-        res.status(200).json(comments);
-      } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch comments' });
-      }
-      break;
-    case 'POST':
-      try {
-        const comment = new Comment(req.body);
-        await comment.save();
-        res.status(201).json(comment);
-      } catch (error) {
-        res.status(400).json({ error: 'Failed to create comment' });
-      }
-      break;
-    default:
-      res.setHeader('Allow', ['GET', 'POST']);
-      res.status(405).end(`Method ${req.method} Not Allowed`);
+export async function POST(request: Request) {
+  try {
+    await dbConnect();
+    const body = await request.json();
+    
+    const db = mongoose.connection.db;
+    const result = await db.collection('comments').insertOne(body);
+    
+    return NextResponse.json(result);
+  } catch (error) {
+    console.error('POST error:', error);
+    return NextResponse.json(
+      { error: 'Failed to add comment' }, 
+      { status: 500 }
+    );
   }
 }
 

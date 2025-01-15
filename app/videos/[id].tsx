@@ -3,7 +3,7 @@
 import { useRouter } from 'next/router';
 
 const fakeVideos = {
-  1: {
+  '1': {
     title: 'Introduction to MongoDB',
     description: 'A detailed guide to MongoDB.',
     tldr: 'MongoDB guide',
@@ -15,7 +15,7 @@ const fakeVideos = {
     likes: '10 likes',
     comments: '5 comments',
   },
-  2: {
+  '2': {
     title: 'Gaming Tips',
     description: 'Pro tips for gamers.',
     tldr: 'Gaming tips',
@@ -27,13 +27,12 @@ const fakeVideos = {
     likes: '20 likes',
     comments: '10 comments',
   },
-};
+} as const;
 
 export default function VideoPage() {
   const router = useRouter();
-  const { id } = router.query;
-
-  const video = fakeVideos[id as keyof typeof fakeVideos];
+  const videoId = router.query.id as string;
+  const video = fakeVideos[videoId as keyof typeof fakeVideos];
 
   if (!video) {
     return <div>Video not found</div>;
