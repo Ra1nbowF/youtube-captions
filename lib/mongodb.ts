@@ -20,27 +20,39 @@ async function dbConnect() {
     throw new Error('Please define the MONGODB_URI environment variable');
   }
 
-  if (cached.conn) {
-    console.log('Using cached MongoDB connection');
-    return cached.conn;
-  }
-
-  if (!cached.promise) {
-    const opts = { bufferCommands: false };
-    console.log('Connecting to MongoDB...');
-    cached.promise = mongoose.connect(process.env.MONGODB_URI, opts);
-  }
-
   try {
+    if (cached.conn) {
+      console.log('Using cached MongoDB connection');
+      return cached.conn;
+    }
+
+    if (!cached.promise) {
+      const opts = { 
+        bufferCommands: false,
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 45000,
+      };
+
+      console.log('Connecting to MongoDB...');
+      cached.promise = mongoose.connect(process.env.MONGODB_URI, opts);
+    }
+
     cached.conn = await cached.promise;
     console.log('MongoDB connected successfully');
+    
+    mongoose.connection.on('error', (err) => {
+      console.error('MongoDB connection error:', err);
+      cached.conn = null;
+      cached.promise = null;
+    });
+
+    return cached.conn;
   } catch (e) {
-    cached.promise = null;
     console.error('Failed to connect to MongoDB:', e);
+    cached.promise = null;
+    cached.conn = null;
     throw e;
   }
-
-  return cached.conn;
 }
 
 export default dbConnect;
