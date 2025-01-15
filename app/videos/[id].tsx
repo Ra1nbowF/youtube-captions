@@ -4,32 +4,28 @@ import { useRouter } from 'next/router';
 
 const fakeVideos = {
   1: {
-    title: 'Amazing Nature',
-    description: 'Explore the beauty of nature with this amazing video.',
-    views: '1.2M views',
-    likes: '120K likes',
-    uploadDate: 'Jan 1, 2023',
+    title: 'Introduction to MongoDB',
+    description: 'A detailed guide to MongoDB.',
+    tldr: 'MongoDB guide',
+    captions: 'Some captions here',
+    uploadDate: 'Jan 14, 2025',
+    thumbnailUrl: 'http://example.com/video1.jpg',
+    videoUrl: 'http://example.com/video1.mp4',
+    views: '100 views',
+    likes: '10 likes',
+    comments: '5 comments',
   },
   2: {
-    title: 'Tech Innovations',
-    description: 'Discover the latest in technology and innovation.',
-    views: '800K views',
-    likes: '80K likes',
-    uploadDate: 'Feb 15, 2023',
-  },
-  3: {
-    title: 'Cooking Tips',
-    description: 'Learn some great cooking tips and tricks.',
-    views: '500K views',
-    likes: '50K likes',
-    uploadDate: 'Mar 10, 2023',
-  },
-  4: {
-    title: 'Travel Vlogs',
-    description: 'Join us on a journey to exciting travel destinations.',
-    views: '2M views',
-    likes: '200K likes',
-    uploadDate: 'Apr 5, 2023',
+    title: 'Gaming Tips',
+    description: 'Pro tips for gamers.',
+    tldr: 'Gaming tips',
+    captions: 'Some captions here',
+    uploadDate: 'Jan 14, 2025',
+    thumbnailUrl: 'http://example.com/video2.jpg',
+    videoUrl: 'http://example.com/video2.mp4',
+    views: '200 views',
+    likes: '20 likes',
+    comments: '10 comments',
   },
 };
 
@@ -47,8 +43,12 @@ export default function VideoPage() {
     <div className="p-4">
       <h1 className="text-2xl font-bold">{video.title}</h1>
       <p className="mt-2">{video.description}</p>
-      <p className="text-sm text-gray-600">{video.views} • {video.likes} • {video.uploadDate}</p>
-      <img src="/placeholder.svg" alt={video.title} className="w-full h-auto mt-4" />
+      <p className="text-sm text-gray-600">
+        {video.views} • {video.likes} • {video.comments} • {video.uploadDate}
+      </p>
+      <img src={video.thumbnailUrl} alt={video.title} className="w-full h-auto mt-4" />
+      <p className="mt-2">{video.tldr}</p>
+      <p className="mt-2">{video.captions}</p>
     </div>
   );
 } 
